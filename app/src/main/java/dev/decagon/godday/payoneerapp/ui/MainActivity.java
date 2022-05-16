@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
+    Button retryButton;
     PaymentOptionViewModel viewModel;
     PaymentAdapter adapter;
 
@@ -41,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
+
+        retryButton = findViewById(R.id.retry_btn);
+        retryButton.setOnClickListener(view -> {
+            view.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            viewModel.loadPaymentOptions();
+        });
     }
 
     private void initViewModelAndObservers() {
@@ -49,11 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel.getPaymentOptions().observe(this, paymentOptions -> {
             progressBar.setVisibility(View.GONE);
+            retryButton.setVisibility(View.GONE);
             adapter.updatePaymentOptions(paymentOptions);
         });
 
         viewModel.getErrors().observe(this, error -> {
             progressBar.setVisibility(View.GONE);
+            retryButton.setVisibility(View.VISIBLE);
             ErrorUtils.handleException(this, error, "");
         });
     }

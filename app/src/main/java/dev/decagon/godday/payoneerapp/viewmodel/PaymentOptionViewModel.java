@@ -10,7 +10,6 @@ import dev.decagon.godday.payoneerapp.model.ApplicableNetwork;
 import dev.decagon.godday.payoneerapp.model.Networks;
 import dev.decagon.godday.payoneerapp.network.PaymentServiceCallback;
 import dev.decagon.godday.payoneerapp.repository.PaymentOptionServiceRepository;
-import dev.decagon.godday.payoneerapp.repository.PaymentOptionServiceRepositoryImpl;
 
 public class PaymentOptionViewModel extends ViewModel {
     private final MutableLiveData<List<ApplicableNetwork>> paymentOptions = new MutableLiveData<>();
@@ -19,7 +18,7 @@ public class PaymentOptionViewModel extends ViewModel {
 
     public PaymentOptionViewModel(PaymentOptionServiceRepository repository) {
         this.repository = repository;
-        getPaymentOptionsFromApi();
+        loadPaymentOptions();
     }
 
     public LiveData<List<ApplicableNetwork>> getPaymentOptions() {
@@ -30,7 +29,7 @@ public class PaymentOptionViewModel extends ViewModel {
         return errors;
     }
 
-    private void getPaymentOptionsFromApi() {
+    public void loadPaymentOptions() {
         repository.getPaymentOptions(new PaymentServiceCallback() {
             @Override
             public void onSuccess(Networks networks) {
